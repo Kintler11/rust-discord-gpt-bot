@@ -25,7 +25,7 @@ pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicatio
         option
             .name("brain")
             .name_localized("fi", "aivot")
-            .description("Ada, Babbage, Currie, Davinci")
+            .description("Ada, Babbage, Currie, Davinci1, Davinci2, Davinci3")
             .required(true)
     })
 }

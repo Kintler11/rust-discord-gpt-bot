@@ -9,6 +9,7 @@ use serenity::model::gateway::Ready;
 use serenity::prelude::*;
 use serenity::utils::MessageBuilder;
 const STATUS: &str = "I am reborn of ashes left by the windows disk formatter.";
+const TRIGGERS: [&'static str; 5] = ["kait", "among", "sus", "vent", "winton"];
 struct Handler;
 fn check_substring(string: &str, vec: &Vec<&str>) -> bool {
     for substr in vec {
@@ -44,14 +45,13 @@ impl EventHandler for Handler {
     }
     async fn message(&self, context: Context, msg: Message) {
         let mut is_reply: bool = false;
-        let triggers = vec!["kait", "among", "sus", "vent", "winton"];
         let is_self: bool = &msg.author.id == &context.cache.current_user_id();
         for user in msg.mentions.iter(){
             if(user.id == context.cache.current_user_id()){
                 is_reply = true;
             }
         }
-        if check_substring(&msg.content.to_lowercase(), &triggers) && !is_self || is_reply {
+        if check_substring(&msg.content.to_lowercase(), &TRIGGERS.to_vec()) && !is_self || is_reply {
             println!("Message Recieved {}", &msg.content);
             let channel = match msg.channel_id.to_channel(&context).await {
                 Ok(channel) => channel,
