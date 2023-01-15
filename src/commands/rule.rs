@@ -13,19 +13,18 @@ pub fn parse(options: &[CommandDataOption]) -> String {
         .as_ref()
         .expect("Expected user object");
 
-    if let CommandDataOptionValue::String(brain)= option {
-        brain.to_string()
+    if let CommandDataOptionValue::String(rule)= option {
+        rule.to_string()
     } else {
         "".to_string()
     }
 }
 
 pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicationCommand {
-    command.name("change").name_localized("fi", "vaihda").description("Change the brains of the model").description_localized("fi", "Vaihda botin aivot").create_option(|option| {
+    command.name("set_rule").description("Set a rule for the bot. Setting a rule will reset the memory of the bot.").create_option(|option| {
         option
-            .name("brain")
-            .name_localized("fi", "aivot")
-            .description("Ada, Babbage, Currie, Davinci1, Davinci2, Davinci3")
+            .name("rule")
+            .description("Example: Act like a dog, only answer in riddles")
             .kind(CommandOptionType::String)
             .required(true)
     })

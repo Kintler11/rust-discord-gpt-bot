@@ -553,6 +553,8 @@ version = "0.1.0"
 dependencies = [
  "async-openai",
  "lazy_static",
+ "serde",
+ "serde_json",
  "serenity",
  "tokio",
 ]

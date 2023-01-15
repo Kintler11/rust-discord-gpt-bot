@@ -21,5 +21,5 @@ pub fn run(options: &[CommandDataOption]) -> String {
 }
 
 pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicationCommand {
-    command.name("clean").name_localized("fi", "puhdista").description("Clean the bots memory of the conversation.").description_localized("fi", "Poista keskustelu botin muistista.")
+    command.name("clean").name_localized("fi", "puhdista").description("Clean the bots memory of the conversation. (Will also clear all rules)").description_localized("fi", "Poista keskustelu botin muistista. (Poistaa myös asetut säännöt)")
 }

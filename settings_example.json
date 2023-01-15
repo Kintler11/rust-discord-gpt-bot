@@ -1,0 +1,5 @@
+{
+    "triggers": ["gpt", "openai"],
+    "discord_token": "INSERT DISCORD TOKEN HERE",
+    "openai_token": "INSERT OPENAI TOKEN HERE"
+}
