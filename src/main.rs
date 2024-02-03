@@ -7,6 +7,7 @@ use serenity::model::channel::Message;
 use serenity::model::application::command::Command;
 use serenity::model::application::interaction::{Interaction, InteractionResponseType};
 use serenity::model::gateway::Ready;
+use serenity::model::guild::automod::Trigger;
 use serenity::prelude::*;
 use serenity::utils::MessageBuilder;
 use lazy_static::lazy_static; 
@@ -24,6 +25,7 @@ struct Settings{
     discord_token: String,
     openai_token: String
 }
+
 fn load_settings(){
     let settings = fs::read_to_string("./settings.json")
     .expect("Settings file not found. Change settings_example.json to settings.json and populate it with relevant data.");
@@ -34,9 +36,10 @@ fn load_settings(){
     *DISCORD_KEY.lock().unwrap() = json.discord_token;
     *TRIGGERS.lock().unwrap() = json.triggers;
 }
-fn check_for_trigger(string: &str, vec: &Vec<String>) -> bool {
-    for substr in vec {
-        if string.contains(substr) {
+
+fn check_for_trigger(keyword: &str, triggers: &Vec<String>) -> bool {
+    for trigger in triggers {
+        if keyword.contains(trigger) {
             return true;
         }
     }

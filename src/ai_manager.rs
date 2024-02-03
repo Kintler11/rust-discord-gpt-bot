@@ -44,25 +44,24 @@ lazy_static! {
     static ref MODEL: Mutex<ChatEngine> = Mutex::new(ChatEngine::Davinci3);
 }
 
-pub fn get_log_length() -> usize{
-    let length = LOG.lock().unwrap().messages.len();
-    return length;
-}
-
 // Clear bots memory
 pub fn clear_log() -> String{
     LOG.lock().unwrap().messages = Vec::new();
     RULES.lock().unwrap().rules = Vec::new();
-    return "Memory Cleared".to_string();
+
+    "Memory Cleared".to_string()
 }
 
-pub fn add_message(msg: ChatMessage) -> bool{
-    if get_log_length() >= LOG.lock().unwrap().length as usize {LOG.lock().unwrap().messages.remove(0);}
+pub fn add_message(msg: ChatMessage){
+
+    let log_ref = LOG.lock().unwrap();
+
+    if log_ref.messages.len() >= log_ref.length as usize {LOG.lock().unwrap().messages.remove(0);}
+
     LOG.lock().unwrap().messages.push(msg);
-    return true;
 }
 pub fn set_rule(rule: String) -> String{
-    let message = format!("'{}' - Rule set. Total rules: {} ", &rule, RULES.lock().unwrap().rules.len() + 1).to_string();
+    let message = format!("'{}' - Rule set. Total rules: {} ", &rule, RULES.lock().unwrap().rules.len() + 1);
     clear_log();
     RULES.lock().unwrap().rules.push(rule);
     message
@@ -86,41 +85,28 @@ pub fn get_chat_log() -> String{
 }
 
 pub fn get_model() -> String{
-    let model = match *MODEL.lock().unwrap(){
+    match *MODEL.lock().unwrap(){
         ChatEngine::Ada => "text-ada-001".to_string(),
         ChatEngine::Babbage => "text-babbage-001".to_string(),
         ChatEngine::Currie => "text-currie-001".to_string(),
         ChatEngine::Davinci1 => "text-davinci-001".to_string(),
         ChatEngine::Davinci2 => "text-davinci-002".to_string(),
         ChatEngine::Davinci3 => "text-davinci-003".to_string(),
-    };
-    model
+    }
 }
 
 pub fn change_model(name: String) -> String{
-
+    let change_message: &str;
     // Change the model based on the request
-    *MODEL.lock().unwrap() = match &name.to_lowercase()[..] {
-        "ada" => ChatEngine::Ada,
-        "babbage" => ChatEngine::Babbage,
-        "currie" => ChatEngine::Currie,
-        "davinci1" => ChatEngine::Davinci1,
-        "davinci2" => ChatEngine::Davinci2,
-        "davinci3" => ChatEngine::Davinci3,
-        _ => ChatEngine::Davinci1
+    (*MODEL.lock().unwrap(), change_message) = match &name.to_lowercase()[..] {
+        "ada" => (ChatEngine::Ada, "Changed brain to Ada"),
+        "babbage" => (ChatEngine::Babbage, "Changed brain to Babbage"),
+        "currie" => (ChatEngine::Currie, "Changed brain to Currie"),
+        "davinci1" => (ChatEngine::Davinci1, "Changed brain to Davinci-001"),
+        "davinci2" => (ChatEngine::Davinci2, "Changed brain to Davinci-002"),
+        "davinci3" => (ChatEngine::Davinci3, "Changed brain to Davinci-003"),
+        _ => (ChatEngine::Davinci1, "Changed brain to Davinci-001")
     };
-
-    // Get appropriate message
-    let change_message = match &name.to_lowercase()[..] {
-        "ada" => "Changed brain to Ada",
-        "babbage" => "Changed brain to Babbage",
-        "currie" => "Changed brain to Currie",
-        "davinci1" => "Changed brain to Davinci-001",
-        "davinci2" => "Changed brain to Davinci-002",
-        "davinci3" => "Changed brain to Davinci-003",
-        _ => "Invalid brain, defaulted to Davinci-001"
-    };
-
     println!("model: {}", get_model());
 
     change_message.to_owned()
